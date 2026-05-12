@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Vibe</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-color: #121420;
+      --card-bg: rgba(30, 32, 48, 0.7);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --primary-accent: #7b42f6;
+      --primary-gradient: linear-gradient(135deg, #a855f7, #6366f1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: "Inter", sans-serif;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(circle at 15% 50%,
+          rgba(123, 66, 246, 0.15),
+          transparent 25%),
+        radial-gradient(circle at 85% 30%,
+          rgba(99, 102, 241, 0.15),
+          transparent 25%);
+    }
+
+    .form-control::placeholder {
+      color: rgba(255, 255, 255, 0.508);
+      background-color: transparent;
+    }
+
+    /* Custom Glassmorphism Cards */
+    .vibe-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Sidebar Styling */
+    .sidebar-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      padding: 0.8rem 1rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .sidebar-link:hover,
+    .sidebar-link.active {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+
+    .sidebar-link i {
+      font-size: 1.25rem;
+    }
+
+    /* Buttons & Inputs */
+    .btn-gradient {
+      background: var(--primary-gradient);
+      color: white;
+      border: none;
+      border-radius: 2rem;
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+    }
+
+    .btn-gradient:hover {
+      opacity: 0.9;
+      color: white;
+    }
+
+    .search-bar {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 2rem;
+      color: white;
+    }
+
+    .search-bar:focus {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--primary-accent);
+      box-shadow: none;
+      color: white;
+    }
+
+    /* Avatars */
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .avatar-lg {
+      width: 80px;
+      height: 80px;
+      border: 3px solid var(--bg-color);
+    }
+
+    .text-muted-custom {
+      color: var(--text-muted) !important;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid py-3 px-4">
+    <div class="row g-4">
+      <div class="col-xl-2 col-lg-3 d-none d-lg-block">
+        <div class="d-flex align-items-center mb-4 px-3">
+          <i class="bi bi-layers-fill fs-3" style="color: #a855f7"></i>
+          <h4 class="mb-0 ms-2 fw-bold">Social Vibe</h4>
+        </div>
+
+        <nav class="d-flex flex-column gap-2 mb-5">
+          <a href="{% url 'home' %}" class="sidebar-link"><i class="bi bi-house-door"></i> Home</a>
+          <a href="{% url 'stories' %}" class="sidebar-link"><i class="bi bi-compass"></i> Stories</a>
+          <a href="{% url 'notifications' %}" class="sidebar-link d-flex justify-content-between">
+            <span><i class="bi bi-bell"></i>&nbsp; &nbsp; Notifications</span>
+            {% if unread_notifications > 0 %}
+            <span class="badge bg-primary rounded-pill">{{ unread_notifications }}</span>
+            {% endif %}
+          </a>
+          <a href="{% url 'messages' %}" class="sidebar-link"><i class="bi bi-envelope"></i> Messages</a>
+          <a href="{% url 'profile' %}" class="sidebar-link active"><i class="bi bi-person"></i> Profile</a>
+          <a href="{% url 'settings' %}" class="sidebar-link"><i class="bi bi-gear"></i> Settings</a>
+          <a href="{% url 'logout_view' %}" class="sidebar-link">
+            <i class="bi bi-box-arrow-right"></i> Logout</a>
+        </nav>
+
+        <button class="btn btn-gradient w-100 mb-5" data-bs-toggle="modal" data-bs-target="#createPostModal">
+          <i class="bi bi-plus-lg me-2"></i>Create Post
+        </button>
+
+        <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
+          <img
+            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+            alt="User" class="avatar me-2" />
+          <div class="overflow-hidden">
+            <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
+            <small class="text-muted-custom">@{{ current_user.fullname|slugify }}</small>
+          </div>
+          <i class="bi bi-three-dots-vertical ms-auto text-muted"></i>
+        </div>
+      </div>
+
+      <div class="col-xl-6 col-lg-5 col-md-12">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <button class="btn btn-outline-light d-lg-none border-0 px-0 me-3" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#mobileMenu">
+            <i class="bi bi-list fs-2"></i>
+          </button>
+          <form action="{% url 'home' %}" method="GET" class="position-relative w-50">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3"></i>
+            <input type="text" name="search" class="form-control search-bar ps-5"
+              placeholder="Search for people (e.g. @yash)..." />
+          </form>
+          <div class="d-flex gap-3 align-items-center">
+            <a href="{% url 'notifications' %}"
+              class="vibe-card rounded-circle p-2 d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px; position: relative; color: white;">
+              <i class="bi bi-bell"></i>
+              {% if unread_notifications > 0 %}
+              <span
+                style="position: absolute; top: -5px; right: -5px; background-color: red; color: white; border-radius: 50%; font-size: 0.6rem; padding: 2px 6px;">
+                {{ unread_notifications }}
+              </span>
+              {% endif %}
+            </a>
+            <img
+              src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+              class="avatar" alt="Profile" />
+          </div>
+        </div>
+
+        <div class="vibe-card p-4 mb-4 position-relative overflow-hidden">
+          {% if viewed_user.cover_image %}
+          <div class="rounded-4 mb-5"
+            style="height: 150px; background-image: url('{{ viewed_user.cover_image.url }}'); background-size: cover; background-position: center;">
+          </div>
+          {% else %}
+          <div class="rounded-4 mb-5" style="height: 150px; background: var(--primary-gradient);"></div>
+          {% endif %}
+
+          <div class="position-absolute" style="top: 186px;">
+            {% if viewed_user.profile_picture %}
+            <img src="{{ viewed_user.profile_picture.url }}" class="avatar-lg rounded-circle shadow" alt="Profile" />
+            {% else %}
+            <img src="https://i.pravatar.cc/150?img=47" class="avatar-lg rounded-circle shadow" alt="Profile" />
+            {% endif %}
+          </div>
+          <div class="d-flex justify-content-end mb-3">
+            {% if viewed_user == current_user %}
+            <button class="btn btn-outline-light rounded-pill px-4" data-bs-toggle="modal"
+              data-bs-target="#editProfileModal" style="border-color: var(--border-color);">
+              Edit Profile
+            </button>
+            {% else %}
+            {% if is_following %}
+            <a href="{% url 'unfollow_user' viewed_user.id %}"
+              class="btn btn-outline-danger rounded-pill px-4">Unfollow</a>
+            {% else %}
+            <a href="{% url 'follow_user' viewed_user.id %}" class="btn btn-gradient rounded-pill px-4">Follow</a>
+            {% endif %}
+            {% endif %}
+          </div>
+          <div>
+            <h4 class="fw-bold mb-0">{{ viewed_user.fullname }}</h4>
+            <p class="text-muted-custom mb-3">@{{ viewed_user.fullname|slugify }}</p>
+            <p class="mb-3">{{ viewed_user.bio }}</p>
+            <div class="d-flex gap-4 text-muted-custom">
+              <span><strong class="text-white">{{ following_count }}</strong> Following</span>
+              <span><strong class="text-white">{{ follower_count }}</strong> Followers</span>
+            </div>
+          </div>
+        </div>
+
+        <ul class="nav nav-pills mb-4 d-flex border-bottom border-secondary border-opacity-25 pb-2" id="profileTabs"
+          role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-pill px-4 text-white" id="posts-tab" data-bs-toggle="pill"
+              data-bs-target="#posts" type="button" role="tab" aria-controls="posts" aria-selected="true">Posts</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-pill px-4 text-white" id="media-tab" data-bs-toggle="pill"
+              data-bs-target="#media" type="button" role="tab" aria-controls="media"
+              aria-selected="false">Media</button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="profileTabsContent">
+          <!-- Posts Tab -->
+          <div class="tab-pane fade show active" id="posts" role="tabpanel" aria-labelledby="posts-tab">
+            {% for post in posts %}
+            <div class="vibe-card p-4 mb-4">
+              <div class="d-flex justify-content-between mb-3">
+                <div class="d-flex align-items-center">
+                  <img
+                    src="{% if post.user.profile_picture %}{{ post.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                    class="avatar me-3" alt="User" />
+                  <div>
+                    <h6 class="mb-0">{{ post.user.fullname }}
+                      {% if post.feeling %}<small class="text-muted-custom fw-normal">is feeling {{ post.feeling }} <i class="bi bi-emoji-smile-fill text-warning" style="font-size: 0.8rem;"></i></small>{% endif %}
+                    </h6>
+                    <small class="text-muted-custom">@{{ post.user.fullname|slugify }} · {{ post.created_at|timesince }}
+                      ago</small>
+                  </div>
+                </div>
+                <i class="bi bi-three-dots text-muted"></i>
+              </div>
+
+              {% if post.content %}
+              <p class="mb-3">{{ post.content }}</p>
+              {% endif %}
+
+              {% if post.attachment %}
+              {% if ".mp4" in post.attachment.url or ".mov" in post.attachment.url %}
+              <video src="{{ post.attachment.url }}" class="img-fluid rounded-4 mb-3 w-100" controls
+                style="max-height: 400px; object-fit: cover"></video>
+              {% else %}
+              <img src="{{ post.attachment.url }}" class="img-fluid rounded-4 mb-3 w-100" alt="Post Attachment"
+                style="max-height: 400px; object-fit: cover" />
+              {% endif %}
+              {% endif %}
+
+              <div class="d-flex gap-4 text-muted-custom px-2 border-top border-secondary border-opacity-25 pt-3 mb-3">
+                <a href="{% url 'like_post' post.id %}"
+                  class="text-decoration-none text-muted-custom d-flex align-items-center gap-1">
+                  <i
+                    class="bi bi-heart{% for like in post.likes.all %}{% if like.user == current_user %}-fill text-danger{% endif %}{% endfor %}"></i>
+                  {{ post.likes.count }}
+                </a>
+                <span class="d-flex align-items-center gap-1" style="cursor: pointer;"
+                  onclick="document.getElementById('comment-form-{{ post.id }}').classList.toggle('d-none')">
+                  <i class="bi bi-chat"></i> {{ post.comments.count }}
+                </span>
+              </div>
+
+              <!-- Comment Section -->
+              <div id="comment-section-{{ post.id }}" class="mt-3">
+                {% for comment in post.comments.all %}
+                <div class="d-flex gap-2 mb-2">
+                  <img
+                    src="{% if comment.user.profile_picture %}{{ comment.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                    class="avatar" style="width: 30px; height: 30px;" alt="User" />
+                  <div class="vibe-card p-2 flex-grow-1" style="background: rgba(255,255,255,0.05);">
+                    <div class="d-flex justify-content-between align-items-start">
+                      <small class="fw-bold">{{ comment.user.fullname }}</small>
+                      <div class="d-flex align-items-center gap-2">
+                        <small class="text-muted-custom" style="font-size: 0.7rem;">{{ comment.created_at|timesince }}
+                          ago</small>
+                        {% if comment.user.id == current_user.id %}
+                        <a href="{% url 'delete_comment' comment.id %}" class="text-muted-custom hover-danger"
+                          onclick="return confirm('Are you sure you want to delete this comment?')">
+                          <i class="bi bi-trash small"></i>
+                        </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                    <p class="mb-0 small">{{ comment.content }}</p>
+                  </div>
+                </div>
+                {% endfor %}
+
+                <form id="comment-form-{{ post.id }}" action="{% url 'add_comment' post.id %}" method="POST"
+                  class="d-none mt-2">
+                  {% csrf_token %}
+                  <div class="input-group">
+                    <input type="text" name="content" class="form-control bg-dark text-white border-secondary"
+                      placeholder="Write a comment..." required>
+                    <button class="btn btn-gradient btn-sm" type="submit">Send</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            {% empty %}
+            <div class="vibe-card p-5 text-center">
+              <i class="bi bi-chat-dots fs-1 text-muted-custom mb-3 d-block"></i>
+              <h5 class="text-muted-custom">No posts yet. Share your first thought!</h5>
+            </div>
+            {% endfor %}
+          </div>
+
+          <!-- Media Tab -->
+          <div class="tab-pane fade" id="media" role="tabpanel" aria-labelledby="media-tab">
+            <div class="row g-3">
+              {% for post in media_posts %}
+              <div class="col-md-4">
+                <div class="vibe-card overflow-hidden" style="height: 200px;">
+                  {% if ".mp4" in post.attachment.url or ".mov" in post.attachment.url %}
+                  <video src="{{ post.attachment.url }}" class="w-100 h-100 object-fit-cover"></video>
+                  {% else %}
+                  <img src="{{ post.attachment.url }}" class="w-100 h-100 object-fit-cover" alt="Media">
+                  {% endif %}
+                </div>
+              </div>
+              {% empty %}
+              <div class="col-12">
+                <div class="vibe-card p-5 text-center">
+                  <i class="bi bi-images fs-1 text-muted-custom mb-3 d-block"></i>
+                  <h5 class="text-muted-custom">No media uploaded yet.</h5>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-lg-4 d-none d-lg-block">
+        <div class="vibe-card p-4 mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h6 class="mb-0 fw-bold">Who to follow</h6>
+            <a href="#" class="text-decoration-none text-primary" style="font-size: 0.875rem">See all</a>
+          </div>
+
+          {% for suggestion in suggestions %}
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <a href="{% url 'user_profile' suggestion.id %}"
+              class="d-flex align-items-center text-decoration-none text-white">
+              <img
+                src="{% if suggestion.profile_picture %}{{ suggestion.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=33{% endif %}"
+                class="avatar me-2" alt="User" />
+              <div>
+                <h6 class="mb-0" style="font-size: 0.9rem">{{ suggestion.fullname }}</h6>
+                <small class="text-muted-custom">@{{ suggestion.fullname|slugify }}</small>
+              </div>
+            </a>
+            <a href="{% url 'follow_user' suggestion.id %}" class="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
+              style="border-color: var(--border-color)">
+              Follow
+            </a>
+          </div>
+          {% empty %}
+          <p class="text-muted-custom small mb-0">No new suggestions at the moment.</p>
+          {% endfor %}
+        </div>
+
+        <div class="vibe-card p-4">
+          <h6 class="mb-4 fw-bold">Trending for you</h6>
+
+          <div class="mb-3">
+            <p class="mb-0 fw-bold">#MondayMotivation</p>
+            <small class="text-muted-custom">12.5K posts</small>
+          </div>
+          <div class="mb-3">
+            <p class="mb-0 fw-bold">#NaturePhotography</p>
+            <small class="text-muted-custom">8,320 posts</small>
+          </div>
+          <div class="mb-3">
+            <p class="mb-0 fw-bold">#WebDevelopment</p>
+            <small class="text-muted-custom">6,210 posts</small>
+          </div>
+          <a href="#" class="text-decoration-none text-primary d-block mt-3" style="font-size: 0.875rem">Show more</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="editProfileModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content vibe-card border-0 shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">Edit Profile</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            <div class="mb-4 text-center">
+              <label class="form-label text-muted-custom d-block mb-3">Profile Picture</label>
+              <div class="position-relative d-inline-block">
+                {% if current_user.profile_picture %}
+                <img src="{{ current_user.profile_picture.url }}"
+                  class="avatar-lg rounded-circle border border-secondary border-opacity-25" id="pfpPreview"
+                  style="width: 120px; height: 120px; object-fit: cover;">
+                {% else %}
+                <img src="https://i.pravatar.cc/150?img=47"
+                  class="avatar-lg rounded-circle border border-secondary border-opacity-25" id="pfpPreview"
+                  style="width: 120px; height: 120px; object-fit: cover;">
+                {% endif %}
+                <input type="file" name="profile_picture" id="pfpInput" class="d-none" accept="image/*">
+                <button type="button" class="btn btn-dark btn-sm rounded-circle position-absolute bottom-0 end-0 p-2"
+                  onclick="document.getElementById('pfpInput').click()">
+                  <i class="bi bi-camera"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-muted-custom">Full Name</label>
+              <input type="text" name="fullname" class="form-control bg-dark text-white border-secondary"
+                value="{{ current_user.fullname }}">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-muted-custom">Bio</label>
+              <textarea name="bio" class="form-control bg-dark text-white border-secondary"
+                rows="3">{{ current_user.bio }}</textarea>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label text-muted-custom">Cover Image</label>
+              <div class="vibe-card p-2 rounded-4 overflow-hidden position-relative" style="height: 100px;">
+                {% if current_user.cover_image %}
+                <img src="{{ current_user.cover_image.url }}" class="w-100 h-100 object-fit-cover rounded-3"
+                  id="coverPreview">
+                {% else %}
+                <div class="w-100 h-100 rounded-3" id="coverPreview" style="background: var(--primary-gradient);"></div>
+                {% endif %}
+                <input type="file" name="cover_image" id="coverInput" class="d-none" accept="image/*">
+                <button type="button"
+                  class="btn btn-dark btn-sm rounded-circle position-absolute top-50 start-50 translate-middle p-2"
+                  onclick="document.getElementById('coverInput').click()">
+                  <i class="bi bi-camera"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0 p-4 pt-0">
+            <button type="button" class="btn btn-link text-muted text-decoration-none me-auto"
+              data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-gradient px-4">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create Post Modal -->
+  <div class="modal fade" id="createPostModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content vibe-card border-0 shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold">Create Post</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-body p-4">
+            <div class="d-flex align-items-center mb-3">
+              <img
+                src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                class="avatar me-3" alt="Profile" />
+              <textarea name="content" class="form-control bg-transparent border-0 text-white" rows="3"
+                placeholder="What's on your mind, {{ current_user.fullname }}?"></textarea>
+            </div>
+            <div id="modalAttachmentPreview" class="mb-3 d-none">
+              <img id="modalPreviewImg" src="" class="img-fluid rounded-3 w-100">
+            </div>
+            <div class="mb-3">
+              <label class="form-label text-muted-custom small text-uppercase">Add Feeling</label>
+              <input type="text" name="feeling" class="form-control bg-dark text-white border-0"
+                placeholder="e.g. Happy, Excited">
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <input type="file" name="attachment" id="modalPostAttachment" class="d-none" accept="image/*,video/*">
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill"
+                onclick="document.getElementById('modalPostAttachment').click()">
+                <i class="bi bi-image me-1"></i> Add Attachment
+              </button>
+            </div>
+          </div>
+          <div class="modal-footer border-0 p-4 pt-0">
+            <button type="submit" class="btn btn-gradient w-100">Post Now</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Menu Offcanvas -->
+  <div class="offcanvas offcanvas-start vibe-card border-0" tabindex="-1" id="mobileMenu"
+    style="width: 280px; background: var(--bg-color);">
+    <div class="offcanvas-header border-bottom border-secondary border-opacity-25">
+      <div class="d-flex align-items-center">
+        <i class="bi bi-layers-fill fs-3" style="color: #a855f7"></i>
+        <h4 class="mb-0 ms-2 fw-bold">Social Vibe</h4>
+      </div>
+      <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-4">
+      <nav class="d-flex flex-column gap-2 mb-4">
+        <a href="{% url 'home' %}" class="sidebar-link"><i class="bi bi-house-door"></i> Home</a>
+        <a href="{% url 'stories' %}" class="sidebar-link"><i class="bi bi-compass"></i> Stories</a>
+        <a href="{% url 'notifications' %}" class="sidebar-link d-flex justify-content-between">
+          <span><i class="bi bi-bell"></i>&nbsp; &nbsp; Notifications </span>
+          {% if unread_notifications > 0 %}
+          <span class="badge bg-primary rounded-pill">{{ unread_notifications }}</span>
+          {% endif %}
+        </a>
+        <a href="{% url 'messages' %}" class="sidebar-link"><i class="bi bi-envelope"></i> Messages</a>
+        <a href="{% url 'profile' %}" class="sidebar-link active"><i class="bi bi-person"></i> Profile</a>
+        <a href="{% url 'settings' %}" class="sidebar-link"><i class="bi bi-gear"></i> Settings</a>
+        <a href="{% url 'logout_view' %}" class="sidebar-link">
+          <i class="bi bi-box-arrow-right"></i> Logout</a>
+      </nav>
+
+      <button class="btn btn-gradient w-100 mb-4" data-bs-toggle="modal" data-bs-target="#createPostModal">
+        <i class="bi bi-plus-lg me-2"></i>Create Post
+      </button>
+
+      <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
+        <img
+          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+          alt="User" class="avatar me-2" />
+        <div class="overflow-hidden">
+          <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
+          <small class="text-muted-custom">@{{ current_user.fullname|slugify }}</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Profile Edit Previews
+    document.getElementById('pfpInput').onchange = evt => {
+      const [file] = evt.target.files;
+      if (file) {
+        document.getElementById('pfpPreview').src = URL.createObjectURL(file);
+      }
+    }
+    document.getElementById('coverInput').onchange = evt => {
+      const [file] = evt.target.files;
+      if (file) {
+        const preview = document.getElementById('coverPreview');
+        if (preview.tagName === 'IMG') {
+          preview.src = URL.createObjectURL(file);
+        } else {
+          const img = document.createElement('img');
+          img.src = URL.createObjectURL(file);
+          img.id = 'coverPreview';
+          img.className = 'w-100 h-100 object-fit-cover rounded-3';
+          preview.parentNode.replaceChild(img, preview);
+        }
+      }
+    }
+    // Create Post Preview
+    document.getElementById('modalPostAttachment').onchange = evt => {
+      const [file] = evt.target.files;
+      if (file) {
+        const previewContainer = document.getElementById('modalAttachmentPreview');
+        const previewImg = document.getElementById('modalPreviewImg');
+        previewImg.src = URL.createObjectURL(file);
+        previewContainer.classList.remove('d-none');
+      }
+    }
+  </script>
+</body>
+
+</html>
