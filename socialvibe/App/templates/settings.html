@@ -280,7 +280,7 @@
                   <small class="text-muted-custom">Permanently remove your data</small>
                 </div>
               </div>
-              <button class="btn btn-sm btn-outline-danger rounded-pill px-3">Delete</button>
+              <button class="btn btn-sm btn-outline-danger rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">Delete</button>
             </div>
           </div>
 
@@ -436,6 +436,30 @@
             <button type="button" class="btn btn-link text-muted text-decoration-none me-auto"
               data-bs-dismiss="modal">Cancel</button>
             <button type="submit" class="btn btn-gradient px-4">Update Password</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Account Modal -->
+  <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content vibe-card border-0 shadow-lg">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title fw-bold text-danger">Delete Account</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="delete_account">
+          <div class="modal-body p-4">
+            <p class="text-white mb-2">Are you absolutely sure you want to permanently delete your account?</p>
+            <p class="text-danger small mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>This action is irreversible. All of your profile details, posts, messages, stories, and likes will be permanently deleted.</p>
+          </div>
+          <div class="modal-footer border-0 p-4 pt-0">
+            <button type="button" class="btn btn-link text-muted text-decoration-none me-auto" data-bs-dismiss="modal">No, Cancel</button>
+            <button type="submit" class="btn btn-danger px-4 rounded-pill">Yes, Delete Account</button>
           </div>
         </form>
       </div>

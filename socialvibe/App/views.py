@@ -386,6 +386,12 @@ def settings_view(request):
             else:
                 messages.error(request, "Incorrect old password.")
             return redirect('settings')
+            
+        elif action == "delete_account":
+            user.delete()
+            request.session.flush()
+            messages.success(request, "Your account has been permanently deleted.")
+            return redirect('index')
 
     # Who to follow suggestions
     following_ids = Follower.objects.filter(follower=user).values_list('following_id', flat=True)
