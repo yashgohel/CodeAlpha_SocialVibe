@@ -17,6 +17,7 @@ urlpatterns = [
     path('profile/<int:user_id>/', views.profile_view, name='user_profile'),
     path('stories', views.stories_view, name='stories'),
     path('add_story', views.add_story, name='add_story'),
+    path('delete_story/<int:story_id>/', views.delete_story, name='delete_story'),
     path('settings', views.settings_view, name='settings'),
     path('like/<int:post_id>/', views.like_post, name='like_post'),
     path('comment/<int:post_id>/', views.add_comment, name='add_comment'),

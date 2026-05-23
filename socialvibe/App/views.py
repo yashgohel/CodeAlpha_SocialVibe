@@ -332,6 +332,18 @@ def add_story(request):
             messages.success(request, "Story posted successfully!")
     return redirect('home')
 
+def delete_story(request, story_id):
+    if 'user_id' not in request.session:
+        return redirect('index')
+    try:
+        story = Story.objects.get(id=story_id)
+        if story.user.id == request.session['user_id']:
+            story.delete()
+            messages.success(request, "Story deleted successfully!")
+    except Story.DoesNotExist:
+        pass
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
 def settings_view(request):
     if 'user_id' not in request.session:
         return redirect('index')
