@@ -131,15 +131,30 @@
 
       <!-- Notifications Content -->
       <div class="col-xl-6 col-lg-5 col-md-12">
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <button class="btn btn-outline-light d-lg-none border-0 px-0 me-3" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#mobileMenu">
+            <i class="bi bi-list fs-2"></i>
+          </button>
+          <form action="{% url 'home' %}" method="GET" class="position-relative w-50">
+            <i class="bi bi-search position-absolute top-50 translate-middle-y ms-3"></i>
+            <input type="text" name="search" class="form-control search-bar ps-5"
+              placeholder="Search for people (e.g. @yash)..." />
+          </form>
+          <div class="d-flex gap-3 align-items-center">
+            <div class="vibe-card rounded-circle p-2 d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px">
+              <a href="{% url 'notifications' %}"><i class="bi bi-bell" style="color: white;"></i></a>
+            </div>
+            <img
+              src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+              class="avatar" alt="Profile" />
+          </div>
+        </div>
+
         <div class="vibe-card p-4">
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <div class="d-flex align-items-center">
-              <button class="btn btn-outline-light d-lg-none border-0 px-0 me-3" type="button" data-bs-toggle="offcanvas"
-                data-bs-target="#mobileMenu">
-                <i class="bi bi-list fs-2"></i>
-              </button>
-              <h4 class="fw-bold mb-0">Notifications</h4>
-            </div>
+            <h4 class="fw-bold mb-0">Notifications</h4>
             <span class="badge bg-primary rounded-pill">Newest</span>
           </div>
 
@@ -165,8 +180,7 @@
 
               <div class="flex-grow-1">
                 <p class="mb-0">
-                  <a href="{% url 'user_profile' n.sender.id %}" class="text-decoration-none text-white fw-bold">{{
-                    n.sender.fullname }}</a>
+                  <a href="{% url 'user_profile' n.sender.id %}" class="text-decoration-none text-white fw-bold">{{ n.sender.fullname }}</a>
                   {% if n.notification_type == 'like' %}
                   liked your post.
                   {% elif n.notification_type == 'comment' %}
