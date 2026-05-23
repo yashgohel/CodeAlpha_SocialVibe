@@ -168,7 +168,7 @@
               </button>
               <a href="{% url 'messages' %}" class="text-white me-3 d-lg-none"><i class="bi bi-arrow-left fs-4"></i></a>
               <img
-                src="{% if active_chat_user.profile_picture %}{{ active_chat_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=11{% endif %}"
+                src="{% if active_chat_user.profile_picture %}{{ active_chat_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
                 class="avatar me-3" alt="User" />
               <div>
                 <h6 class="mb-0">{{ active_chat_user.fullname }}</h6>
@@ -296,7 +296,7 @@
                 class="d-flex align-items-center p-3 rounded text-decoration-none text-white hover-effect"
                 style="background: rgba(255, 255, 255, 0.02); transition: all 0.2s;">
                 <img
-                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=11{% endif %}"
+                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
                   class="avatar me-3" alt="User" />
                 <div class="flex-grow-1 overflow-hidden">
                   <div class="d-flex justify-content-between">
@@ -328,7 +328,7 @@
             <div class="text-center" style="min-width: 60px;">
               <div class="position-relative d-inline-block mb-1">
                 <img
-                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=11{% endif %}"
+                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
                   class="avatar" style="width: 50px; height: 50px;" alt="User">
                 <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-dark rounded-circle"></span>
               </div>
