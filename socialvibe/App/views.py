@@ -215,6 +215,19 @@ def edit_message(request, message_id):
                 message.save()
     return redirect('chat_with_user', chat_user_id=message.receiver.id)
 
+def delete_message(request, message_id):
+    if 'user_id' not in request.session:
+        return redirect('index')
+    try:
+        message = Message.objects.get(id=message_id)
+        if message.sender.id == request.session['user_id']:
+            receiver_id = message.receiver.id
+            message.delete()
+            return redirect('chat_with_user', chat_user_id=receiver_id)
+    except Message.DoesNotExist:
+        pass
+    return redirect('messages')
+
 def profile_view(request, user_id=None):
     if 'user_id' not in request.session:
         return redirect('index')
