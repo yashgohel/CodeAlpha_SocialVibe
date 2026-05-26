@@ -1,10 +1,10 @@
-# Social-Vibe
+# Social Vibe
 
-Social-Vibe is a feature-rich, full-stack social media web application built with Python and Django. It provides a modern, interactive platform for users to connect, share content, and communicate in real-time within a stunning "glassmorphism" themed environment.
+Social Vibe is a feature-rich, full-stack social media web application built with Python and Django. It provides a modern, interactive platform for users to connect, share content, and communicate in real-time within a stunning "glassmorphism" themed environment.
 
 ## About The Project
 
-Social-Vibe is designed to offer a premium social networking experience. The application features a sleek, dark-themed UI with elegant glassmorphism effects, ensuring a high-end feel. It covers the core functionalities of a modern social platform, including content sharing, social networking, and direct communication, all while maintaining a responsive and fluid user experience.
+Social Vibe is designed to offer a premium social networking experience. The application features a sleek, dark-themed UI with elegant glassmorphism effects, ensuring a high-end feel. It covers the core functionalities of a modern social platform, including content sharing, social networking, and direct communication, all while maintaining a responsive and fluid user experience.
 
 ## Key Features
 
@@ -28,7 +28,7 @@ Social-Vibe is designed to offer a premium social networking experience. The app
 
 ## Getting Started
 
-Follow these steps to set up and run Social-Vibe on your local machine.
+Follow these steps to set up and run Social Vibe on your local machine.
 
 ### Prerequisites
 
@@ -73,7 +73,7 @@ Follow these steps to set up and run Social-Vibe on your local machine.
    python manage.py runserver
    ```
 
-Now, open your browser and navigate to `http://127.0.0.1:8000/` to explore Social-Vibe!
+Now, open your browser and navigate to `http://127.0.0.1:8000/` to explore Social Vibe!
 
 ## How to Use the Website
 
@@ -82,5 +82,6 @@ Now, open your browser and navigate to `http://127.0.0.1:8000/` to explore Socia
 3. **Connect with Others**: Use the search bar to find friends and follow them to see their posts on your home feed.
 4. **Share Content**: Post updates, feelings, or stories from the home page.
 5. **Interact**: Like and comment on your friends' posts to stay engaged.
-6. **Chat**: Use the Messages tab to send direct messages and media to your followers.
+6. **Chat**: Use the Messages tab to send direct messages and media to your followers along with edit and delete features.
 7. **Manage Account**: Use the Settings page to update your information or change your password.
+8. **Delete Account**: Delete the account permanently through Settings page.
