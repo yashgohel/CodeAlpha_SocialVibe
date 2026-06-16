@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -110,7 +111,7 @@
 
         <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
           <img
-            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
             alt="User" class="avatar me-2" />
           <div class="overflow-hidden">
             <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
@@ -152,7 +153,7 @@
 
             {% for story in stories %}
             <div class="vibe-card story-card-vertical"
-              onclick="viewStory('{{ story.attachment.url }}', '{{ story.user.fullname }}', '{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}', '{{ story.created_at|timesince }}', {{ story.id }}, {% if story.user.id == current_user.id %}true{% else %}false{% endif %})">
+              onclick="viewStory('{{ story.attachment.url }}', '{{ story.user.fullname }}', '{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}', '{{ story.created_at|timesince }}', {{ story.id }}, {% if story.user.id == current_user.id %}true{% else %}false{% endif %}, {{ story.user.id }})">
               {% if ".mp4" in story.attachment.url or ".mov" in story.attachment.url %}
               <video src="{{ story.attachment.url }}" class="w-100 h-100 object-fit-cover opacity-75"></video>
               {% else %}
@@ -160,13 +161,17 @@
               {% endif %}
               <div class="position-absolute w-100 h-100 top-0 start-0"
                 style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);"></div>
-              <div class="position-absolute top-0 start-0 m-2">
-                <img
-                  src="{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
-                  class="rounded-circle border border-primary border-2" style="width: 32px; height: 32px;" alt="User" />
+              <div class="position-absolute top-0 start-0 m-2" style="z-index: 10;">
+                <a href="{% url 'user_profile' story.user.id %}" onclick="event.stopPropagation();">
+                  <img
+                    src="{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
+                    class="rounded-circle border border-primary border-2" style="width: 32px; height: 32px;" alt="User" />
+                </a>
               </div>
-              <div class="position-absolute bottom-0 start-0 m-2 w-100">
-                <p class="mb-0 fw-semibold text-truncate pe-3 small">{{ story.user.fullname }}</p>
+              <div class="position-absolute bottom-0 start-0 m-2 w-100" style="z-index: 10;">
+                <a href="{% url 'user_profile' story.user.id %}" onclick="event.stopPropagation();" class="text-decoration-none text-white">
+                  <p class="mb-0 fw-semibold text-truncate pe-3 small">{{ story.user.fullname }}</p>
+                </a>
               </div>
             </div>
             {% endfor %}
@@ -182,14 +187,14 @@
           <div class="position-relative z-1 h-100 d-flex flex-column" style="max-width: 400px; width: 100%;">
             <div class="d-flex align-items-center justify-content-between p-3"
               style="background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);">
-              <div class="d-flex align-items-center">
+              <a id="viewerProfileLink" href="" class="d-flex align-items-center text-decoration-none text-white">
                 <img id="viewerAvatar" src="" class="rounded-circle me-2" style="width: 40px; height: 40px;"
                   alt="User" />
                 <div>
                   <h6 id="viewerName" class="mb-0 fw-bold text-white shadow-sm"></h6>
                   <small id="viewerTime" class="text-white-50"></small>
                 </div>
-              </div>
+              </a>
               <div class="d-flex align-items-center gap-3">
                 <div id="viewerActions"></div>
                 <button class="btn-close btn-close-white" onclick="closeViewer()"></button>
@@ -218,7 +223,7 @@
             {% for story in stories|slice:":5" %}
             <div class="d-flex align-items-center gap-3">
               <img
-                src="{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                src="{% if story.user.profile_picture %}{{ story.user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
                 class="avatar" style="width: 35px; height: 35px;" alt="User">
               <div>
                 <small class="d-block text-white">{{ story.user.fullname }}</small>
@@ -261,7 +266,7 @@
 
       <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
         <img
-          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
           alt="User" class="avatar me-2" />
         <div class="overflow-hidden">
           <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
@@ -274,7 +279,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="/static/js/compress.js"></script>
   <script>
-    function viewStory(url, name, avatar, time, id, isOwner) {
+    function viewStory(url, name, avatar, time, id, isOwner, userId) {
       const viewer = document.getElementById('immersiveViewer');
       const content = document.getElementById('viewerContent');
       const bg = document.getElementById('viewerBg');
@@ -282,10 +287,14 @@
       const vAvatar = document.getElementById('viewerAvatar');
       const vTime = document.getElementById('viewerTime');
       const actions = document.getElementById('viewerActions');
+      const profileLink = document.getElementById('viewerProfileLink');
 
       vName.innerText = name;
       vAvatar.src = avatar;
       vTime.innerText = time;
+      if (profileLink && userId) {
+        profileLink.href = `/profile/${userId}/`;
+      }
 
       if (isOwner) {
         actions.innerHTML = `

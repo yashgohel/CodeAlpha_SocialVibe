@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -144,7 +145,7 @@
 
         <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
           <img
-            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
             alt="User" class="avatar me-2" />
           <div class="overflow-hidden">
             <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
@@ -167,14 +168,16 @@
                 <i class="bi bi-list fs-3"></i>
               </button>
               <a href="{% url 'messages' %}" class="text-white me-3 d-lg-none"><i class="bi bi-arrow-left fs-4"></i></a>
-              <img
-                src="{% if active_chat_user.profile_picture %}{{ active_chat_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
-                class="avatar me-3" alt="User" />
-              <div>
-                <h6 class="mb-0">{{ active_chat_user.fullname }}</h6>
-                <small class="text-success" style="font-size: 0.75rem;"><i class="bi bi-circle-fill me-1"
-                    style="font-size: 0.5rem;"></i> Online</small>
-              </div>
+              <a href="{% url 'user_profile' active_chat_user.id %}" class="d-flex align-items-center text-decoration-none text-white">
+                <img
+                  src="{% if active_chat_user.profile_picture %}{{ active_chat_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
+                  class="avatar me-3" alt="User" />
+                <div>
+                  <h6 class="mb-0">{{ active_chat_user.fullname }}</h6>
+                  <small class="text-success" style="font-size: 0.75rem;"><i class="bi bi-circle-fill me-1"
+                      style="font-size: 0.5rem;"></i> Online</small>
+                </div>
+              </a>
             </div>
             <div class="d-flex gap-3 text-muted">
               <i class="bi bi-telephone" style="cursor: pointer;"></i>
@@ -296,7 +299,7 @@
                 class="d-flex align-items-center p-3 rounded text-decoration-none text-white hover-effect"
                 style="background: rgba(255, 255, 255, 0.02); transition: all 0.2s;">
                 <img
-                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
                   class="avatar me-3" alt="User" />
                 <div class="flex-grow-1 overflow-hidden">
                   <div class="d-flex justify-content-between">
@@ -328,7 +331,7 @@
             <div class="text-center" style="min-width: 60px;">
               <div class="position-relative d-inline-block mb-1">
                 <img
-                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+                  src="{% if friend.profile_picture %}{{ friend.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
                   class="avatar" style="width: 50px; height: 50px;" alt="User">
                 <span class="position-absolute bottom-0 end-0 p-1 bg-success border border-dark rounded-circle"></span>
               </div>
@@ -394,7 +397,7 @@
 
       <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
         <img
-          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
           alt="User" class="avatar me-2" />
         <div class="overflow-hidden">
           <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>

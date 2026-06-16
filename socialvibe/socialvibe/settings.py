@@ -129,7 +129,7 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = BASE_DIR
 
 # Storage configuration (Cloudinary for media, WhiteNoise for static)
 if os.environ.get('CLOUDINARY_CLOUD_NAME'):

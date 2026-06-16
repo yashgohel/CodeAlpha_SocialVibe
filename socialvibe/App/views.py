@@ -2,6 +2,17 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from .models import User, Post, Like, Comment, Follower, Message, Notification, Story
 from django.db.models import Q
+from django.utils import timezone
+from datetime import timedelta
+
+def cleanup_expired_stories():
+    # Delete stories older than 24 hours
+    expired_time = timezone.now() - timedelta(hours=24)
+    expired_stories = Story.objects.filter(created_at__lt=expired_time)
+    for story in expired_stories:
+        if story.attachment:
+            story.attachment.delete(save=False)
+        story.delete()
 
 def create_notification(user, sender, n_type, post=None, message=None):
     if user != sender:
@@ -108,7 +119,11 @@ def home(request):
 
     # Get stories from following and self
     friend_ids = list(following_ids) + [user.id]
-    stories = Story.objects.filter(user_id__in=friend_ids).order_by('-created_at')
+    cleanup_expired_stories()
+    stories = Story.objects.filter(
+        user_id__in=friend_ids,
+        created_at__gte=timezone.now() - timedelta(hours=24)
+    ).order_by('-created_at')
 
     return render(request, 'index.html', {
         'current_user': user, 
@@ -310,7 +325,11 @@ def stories_view(request):
     following_ids = Follower.objects.filter(follower=user).values_list('following_id', flat=True)
     friend_ids = list(following_ids) + [user.id]
     
-    stories = Story.objects.filter(user_id__in=friend_ids).order_by('-created_at')
+    cleanup_expired_stories()
+    stories = Story.objects.filter(
+        user_id__in=friend_ids,
+        created_at__gte=timezone.now() - timedelta(hours=24)
+    ).order_by('-created_at')
     
     # Get unread notifications count
     unread_notifications = Notification.objects.filter(user=user, is_read=False).count()

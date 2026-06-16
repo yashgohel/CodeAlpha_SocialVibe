@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 
@@ -120,7 +121,7 @@
 
         <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
           <img
-            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+            src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
             alt="User" class="avatar me-2" />
           <div class="overflow-hidden">
             <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
@@ -147,7 +148,7 @@
               <a href="{% url 'notifications' %}"><i class="bi bi-bell" style="color: white;"></i></a>
             </div>
             <img
-              src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+              src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
               class="avatar" alt="Profile" />
           </div>
         </div>
@@ -174,9 +175,11 @@
                 {% endif %}
               </div>
 
-              <img
-                src="{% if n.sender.profile_picture %}{{ n.sender.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
-                class="avatar me-3" alt="Sender" />
+              <a href="{% url 'user_profile' n.sender.id %}">
+                <img
+                  src="{% if n.sender.profile_picture %}{{ n.sender.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
+                  class="avatar me-3" alt="Sender" />
+              </a>
 
               <div class="flex-grow-1">
                 <p class="mb-0">
@@ -261,7 +264,7 @@
 
       <div class="d-flex align-items-center mt-auto p-2 vibe-card rounded-pill">
         <img
-          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}https://i.pravatar.cc/150?img=47{% endif %}"
+          src="{% if current_user.profile_picture %}{{ current_user.profile_picture.url }}{% else %}{% static 'profile_pics/default_dp.webp' %}{% endif %}"
           alt="User" class="avatar me-2" />
         <div class="overflow-hidden">
           <h6 class="mb-0 text-truncate fs-6">{{ current_user.fullname }}</h6>
